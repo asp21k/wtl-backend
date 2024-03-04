@@ -1,9 +1,9 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const pool = require("../config/db.js");
-const generateUserToken = require("../utils/generateUserToken.js");
 
 const signup = async (req, res) => {
+
   const { username, password, email, role } = req.body;
 
   try {
@@ -13,13 +13,10 @@ const signup = async (req, res) => {
     const userQueryParams = [username, hashedPassword, email, role];
     const userQueryData = await pool.query(userQuery, userQueryParams);
 
-    const token = await generateUserToken(userQueryData.rows[0].user_id);
-
     res.status(201).json({
       error: false,
       message: "Signup Successful. Welcome aboard!",
       data: {
-        token,
         user: userQueryData.rows[0],
       },
     });
@@ -50,14 +47,12 @@ const login = async (req, res) => {
     if (userQueryData.rowCount === 1) {
       const auth = await bcrypt.compare(password, userQueryData.rows[0].password);
       if (auth) {
-        const token = await generateUserToken(userQueryData.rows[0].user_id);
         const user = userQueryData.rows[0];
         delete user.password;
         res.status(200).json({
           error: false,
           message: "Login Successful. Welcome back!",
           data: {
-            token,
             user,
           },
         });
@@ -80,17 +75,7 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  try {
-    const token = req.token;
-    const query = `DELETE FROM user_token WHERE token = $1`;
-    const queryParams = [token];
-    await pool.query(query, queryParams);
-
-    res.status(200).json({ error: false, message: "Logout Successful. Have a great day!" });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: true, message: "Internal server error!" });
-  }
+  res.status(200).json({ error: false, message: "Logout Successful. Have a great day!" });
 };
 
 module.exports = {
