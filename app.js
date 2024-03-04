@@ -7,16 +7,16 @@ const app = express();
 app.use(express.json());
 // Routes
 const userRoutes = require("./routes/userRoutes");
-// const assignmentRoutes = require("./routes/assignmentRoutes");
-// const submissionRoutes = require("./routes/submissionRoutes");
+const assignmentRoutes = require("./routes/assignmentRoutes");
+const submissionRoutes = require("./routes/submissionRoutes");
 // const studentRoutes = require("./routes/studentRoutes");
 // const teacherRoutes = require("./routes/teacherRoutes");
 // app.use("/", (req, res) => {
 //   res.send("hello world");
 // });
 app.use("/api/users", userRoutes);
-// app.use("/api/assignments", assignmentRoutes);
-// app.use("/api/submissions", submissionRoutes);
+app.use("/api/assignments", assignmentRoutes);
+app.use("/api/submissions", submissionRoutes);
 // app.use("/api/students", studentRoutes);
 // app.use("/api/teachers", teacherRoutes);
 
